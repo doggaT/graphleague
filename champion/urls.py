@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import ChampionsView
+from . import views
 
 urlpatterns = [
-    path('', ChampionsView.as_view(), name='champions')
+    path('', views.champions, name="champions"),
+    path('<str:champion>/', views.champion_details, name="champion")
 ]

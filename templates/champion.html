@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h1 class="mt-5">{{ champion.name }}, {{ champion.title }}</h1>
+    <div class="card mt-3 mb-3" style="border-color: transparent;">
+        <div class="row g-0">
+            <div class="col-md-4">
+                <img src="https://ddragon.leagueoflegends.com/cdn/img/champion/loading/{{ champion.id }}_0.jpg"
+                     class="img-fluid rounded-start" alt="{{ champion.name }}">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title">Lore</h5>
+                    <p class="card-text">{{ champion.lore }}</p>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Lore</h5>
+                    <p class="card-text">{{ champion.lore }}</p>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">tags</h5>
+                    <p class="card-text">{{ champion.tags }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{ champion.allytips }}
+    {{ champion.enemytips }}
+    {{ champion.partype }}
+    {{ champion.info }}
+    {{ champion.spells }}
+    {{ champion.passive }}
+</div>
+{% endblock %}
