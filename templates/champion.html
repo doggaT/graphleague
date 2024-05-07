@@ -5,31 +5,58 @@
     <div class="card mt-3 mb-3" style="border-color: transparent;">
         <div class="row g-0">
             <div class="col-md-4">
-                <img src="https://ddragon.leagueoflegends.com/cdn/img/champion/loading/{{ champion.id }}_0.jpg"
-                     class="img-fluid rounded-start" alt="{{ champion.name }}">
+                <img src="https://ddragon.leagueoflegends.com/cdn/img/champion/loading/{{ champion.key }}_0.jpg"
+                     class="img-fluid rounded-start" alt="{{ champion.name }} loading image">
             </div>
             <div class="col-md-8">
-                <div class="card-body">
-                    <h5 class="card-title">Lore</h5>
-                    <p class="card-text">{{ champion.lore }}</p>
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">Lore</h5>
-                    <p class="card-text">{{ champion.lore }}</p>
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">tags</h5>
-                    <p class="card-text">{{ champion.tags }}</p>
+                <div class="card-body d-flex flex-column justify-content-between h-100">
+                    <div>
+                        <h5 class="card-title">Lore</h5>
+                        <p class="card-text">{{ champion.lore }}</p>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-end">
+                        <div class="d-flex gap-2">
+                            {% for role in champion.roles %}
+                            <div>
+                                <img src="/static/img/{{ role }}_icon.png" alt="{{ role }} icon" width="90">
+                                <p class="text-center">{{ role.capitalize }}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div>
+                              {% include 'partials/_champion-chart.html' %}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-    {{ champion.allytips }}
-    {{ champion.enemytips }}
-    {{ champion.partype }}
-    {{ champion.info }}
-    {{ champion.spells }}
-    {{ champion.passive }}
+    <h4 class="card-title mt-5">Abilities</h4>
+    {% for ability, value in champion.abilities.items %}
+        {% for a in value %}
+    <div class="card mt-3 mb-3 bg-dark">
+        <div class="row g-0 card-body gap-3">
+            <div class="col-md-1">
+                <img src="{{ a.icon }}" alt="{{ a }} ability icon" class="img-fluid" width="90">
+            </div>
+            <div class="col">
+                <div class="d-flex flex-column">
+                    <div>
+                        <h5 class="card-title">{{ ability }} - {{ a.name }}</h5>
+                        {% for effect in a.effects %}
+                        <p class="card-text">{{ effect.description }}</p>
+                        {% endfor %}
+                    </div>
+                    <div class="mt-4">
+                        {% if a.notes is not None %}
+                        <p class="card-title">Note: {{ a.notes }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        {% endfor %}
+    {% endfor %}
 </div>
 {% endblock %}

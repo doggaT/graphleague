@@ -1,5 +1,10 @@
 <footer class="footer mt-auto py-3 container-xl">
   <div class="container">
-    <span class="text-muted">Place sticky footer content here.</span>
+    <span class="text-muted">
+      <p class="text-center">
+        {% now "Y" as current_year %}
+        Copyright {{ current_year }}
+      </p>
+    </span>
   </div>
 </footer>
