@@ -19,7 +19,8 @@
                         <div class="d-flex gap-2">
                             {% for role in champion.roles %}
                             <div>
-                                <img src="{% static 'img/' %}{{ role|safe }}_icon.png" alt="{{ role }} icon" width="90">
+                                <img src="{% static 'img/' %}{{ role.capitalize }}_icon.png" alt="{{ role }} icon"
+                                     width="90">
                                 <p class="text-center">{{ role.capitalize }}</p>
                             </div>
                             {% endfor %}
