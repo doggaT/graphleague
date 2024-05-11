@@ -84,15 +84,16 @@ WSGI_APPLICATION = 'graphleague.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("DB_NAME"),
-        "USER": os.environ.get("DB_USER"),
-        "PASSWORD": os.environ.get("DB_PWD"),
-        "TEST": {
+    "default": dj_database_url.config(
+        default="postgresql://postgres:postgres@localhost:5432/graphleague_db",
+        conn_max_age=600, test_options={
+            "ENGINE": "django.db.backends.postgresql",
             "NAME": "test_db",
-        }
-    },
+            "USER": "postgres",
+            "PASSWORD": "postgres",
+            "HOST": "localhost",
+            "PORT": "5432",
+        })
 }
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
