@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
 <div class="container">
     <h1 class="mt-5">{{ champion.champion_name }}, {{ champion.champion_title }}</h1>
@@ -18,7 +19,7 @@
                         <div class="d-flex gap-2">
                             {% for role in champion.roles %}
                             <div>
-                                <img src="/static/img/{{ role }}_icon.png" alt="{{ role }} icon" width="90">
+                                <img src="{% static 'img/' %}{{ role|safe }}_icon.png" alt="{{ role }} icon" width="90">
                                 <p class="text-center">{{ role.capitalize }}</p>
                             </div>
                             {% endfor %}
