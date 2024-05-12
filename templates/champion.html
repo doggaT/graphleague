@@ -26,7 +26,14 @@
                             {% endfor %}
                         </div>
                         <div>
-                              {% include 'partials/_champion-chart.html' %}
+                            {% if champion.role_class %}
+                            <div class="d-flex justify-content-center mb-2">
+                                {% for role_class in champion.role_class %}
+                                <span class="badge bg-primary">{{ role_class }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            {% include 'partials/_champion-chart.html' %}
                         </div>
                     </div>
                 </div>
@@ -35,7 +42,7 @@
     </div>
     <h4 class="card-title mt-5">Abilities</h4>
     {% for ability, value in champion.abilities.items %}
-        {% for a in value %}
+    {% for a in value %}
     <div class="card mt-3 mb-3 bg-dark">
         <div class="row g-0 card-body gap-3">
             <div class="col-md-1">
@@ -58,7 +65,7 @@
             </div>
         </div>
     </div>
-        {% endfor %}
+    {% endfor %}
     {% endfor %}
 </div>
 {% endblock %}
