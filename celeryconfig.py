@@ -2,7 +2,7 @@ import os
 from celery import Celery
 from celery.schedules import crontab
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'your_project.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'graphleague.settings')
 
 app = Celery('champion')
 app.conf.beat_schedule = {
