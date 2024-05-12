@@ -3,7 +3,9 @@ from django.db import migrations
 from champion.models import Champion
 
 
-def initial_champion_loader(apps):
+def initial_champion_loader(apps, schema_editor):
+    # loads all the current champions into the database
+    # schema_editor is needed to run pytest
     champion_model = apps.get_model("champion", "Champion")
     champions = Champion.champion_loader()
 
