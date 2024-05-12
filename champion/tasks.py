@@ -10,4 +10,4 @@ def run_champion_loader(apps, schema_editor):
     champions = Champion.champion_loader()
 
     for champion in champions:
-        champion_model.objects.update_or_create(**champion)
+        champion_model.objects.update_or_create(**champion, defaults=champion)
