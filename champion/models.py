@@ -2,8 +2,6 @@ import requests
 import logging
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
-from django.db.models.signals import post_save
-from django.db import connection
 
 
 class Champion(models.Model):
