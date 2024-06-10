@@ -3,7 +3,6 @@ import os
 import requests
 from dotenv import load_dotenv
 from tenacity import retry, wait_fixed, wait_random, retry_if_exception, stop_after_attempt
-
 from api.utils import rate_limit_exceeded
 
 load_dotenv()

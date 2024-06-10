@@ -11,4 +11,5 @@ class TierList:
     win_rate = models.CharField(null=False)
     pick_rate = models.CharField(null=False)
     ban_rate = models.CharField(null=False)
+    region = models.CharField(null=False)
     synergy = ArrayField(models.CharField(null=False))
