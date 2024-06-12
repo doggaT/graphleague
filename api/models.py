@@ -3,7 +3,7 @@ import os
 import requests
 from dotenv import load_dotenv
 from tenacity import retry, wait_fixed, wait_random, retry_if_exception, stop_after_attempt
-from api.utils import rate_limit_exceeded
+from api.utils import rate_limit_exceeded, max_retries_exceeded
 
 load_dotenv()
 logger = logging.getLogger(__name__)
@@ -20,6 +20,7 @@ class RiotAPI:
     SUMMONER_MATCHES_URL = "https://{}.api.riotgames.com/lol/match/v5/matches/by-puuid/{}/ids"
     MATCH_URL = "https://{}.api.riotgames.com/lol/match/v5/matches/{}"
     MATCH_TIMELINE_URL = "https://{}.api.riotgames.com/lol/match/v5/matches/{}/timeline"
+    ACCOUNT_BY_RIOT_ID = "https://{}.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{}/{}"
 
     def headers(self):
         return {"X-Riot-Token": self.RIOT_API_KEY}
@@ -64,7 +65,7 @@ class RiotAPI:
 
     @retry(wait=wait_fixed(60) + wait_random(0, 60), retry=retry_if_exception(rate_limit_exceeded),
            stop=stop_after_attempt(10), reraise=True)
-    def fetch_summoner_matches_data(self, region, puuid, queue_id=None, count=100):
+    def fetch_summoner_matches_data(self, region, puuid, queue_id=None, count=20):
         params = {"count": count}
 
         if queue_id:
@@ -92,9 +93,17 @@ class RiotAPI:
         return response.json()
 
     @retry(wait=wait_fixed(60) + wait_random(0, 60), retry=retry_if_exception(rate_limit_exceeded),
-           stop=stop_after_attempt(10), reraise=True)
+           stop=stop_after_attempt(100), reraise=True)
     def fetch_summoner_data(self, platform, summoner_id):
         response = requests.get(self.SUMMONER_URL.format(platform, summoner_id),
+                                headers=self.headers())
+        response.raise_for_status()
+        return response.json()
+
+    @retry(wait=wait_fixed(60) + wait_random(0, 60), retry=retry_if_exception(rate_limit_exceeded),
+           stop=stop_after_attempt(10), reraise=True)
+    def fetch_account_data_by_riot_id(self, region, game_name, tag_line):
+        response = requests.get(self.SUMMONER_URL.format(region, game_name, tag_line),
                                 headers=self.headers())
         response.raise_for_status()
         return response.json()
