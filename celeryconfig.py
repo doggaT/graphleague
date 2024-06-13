@@ -1,6 +1,6 @@
 from celery.schedules import crontab
 
-broker_url = "pyamqp://guest@localhost//"
+broker_url = "redis://:password@hostname:port/0"
 result_backend = "rpc://"
 timezone = "UTC"
 
