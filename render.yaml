@@ -52,9 +52,9 @@ services:
           type: redis
           name: celery-redis
           property: connectionString
-      - type: redis
-        name: celery-redis
-        region: oregon
-        plan: starter # we choose a plan with persistence to ensure tasks are not lost upon restart
-        maxmemoryPolicy: noeviction # recommended policy for queues
-        ipAllowList: [ ] # only allow internal connections
+  - type: redis
+    name: celery-redis
+    region: oregon
+    plan: starter # we choose a plan with persistence to ensure tasks are not lost upon restart
+    maxmemoryPolicy: noeviction # recommended policy for queues
+    ipAllowList: [ ] # only allow internal connections
