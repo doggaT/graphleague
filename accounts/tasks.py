@@ -1,7 +1,8 @@
 from celery import shared_task
 from celery.utils.log import get_task_logger
+from accounts.models import Account
 from api.models import Platform, Ranked
-from models import Account
+
 
 logger = get_task_logger(__name__)
 account = Account()
