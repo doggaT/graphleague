@@ -1,7 +1,11 @@
+import os
+from dotenv import load_dotenv
 from celery.schedules import crontab
 
-broker_url = "redis://:password@hostname:port/0"
-result_backend = "rpc://"
+load_dotenv()
+
+broker_url = os.environ.get("CELERY_BROKER_URL")
+result_backend = os.environ.get("CELERY_BROKER_URL")
 timezone = "UTC"
 
 beat_schedule = {
@@ -11,6 +15,6 @@ beat_schedule = {
     },
     "get-challenger-summoner-ids": {
         "task": "accounts.tasks.run_load_random_challenger_summoner_ids",
-        "schedule": crontab(hour="10", minute="0"),
+        "schedule": crontab(hour="7", minute="0"),
     },
 }
