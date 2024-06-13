@@ -4,8 +4,8 @@ from celery.schedules import crontab
 
 load_dotenv()
 
-broker_url = os.environ.get("CELERY_BROKER_URL")
-result_backend = os.environ.get("CELERY_BROKER_URL")
+broker_url = os.environ.get("CELERY_BROKER_URL", "redis://localhost:6379/0")
+result_backend = os.environ.get("CELERY_BROKER_URL", "redis://localhost:6379/0")
 timezone = "UTC"
 
 beat_schedule = {
