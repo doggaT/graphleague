@@ -1,12 +1,25 @@
 databases:
   - name: graphleague_db
-    plan: free
+    plan: starter
     databaseName: graphleague
     user: graphleague
 
 services:
+  - type: worker
+    name: celery-worker
+    region: oregon
+    runtime: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "celery --app tasks worker --loglevel info --concurrency 4"
+    autoDeploy: false
+    envVars:
+      - key: CELERY_BROKER_URL
+        fromService:
+          name: celery-redis
+          type: redis
+          property: connectionString
   - type: web
-    plan: free
+    plan: starter
     name: graphleague
     runtime: python
     buildCommand: "./build.sh"
@@ -16,7 +29,32 @@ services:
         fromDatabase:
           name: graphleague_db
           property: connectionString
+      - key: CELERY_BROKER_URL
+        fromService:
+          name: celery-redis
+          type: redis
+          property: connectionString
       - key: SECRET_KEY
         generateValue: true
       - key: WEB_CONCURRENCY
         value: 4
+  - type: web
+    name: flower
+    region: oregon
+    plan: free
+    runtime: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "celery flower --app tasks --loglevel info"
+    autoDeploy: false
+    envVars:
+      - key: CELERY_BROKER_URL
+        fromService:
+          type: redis
+          name: celery-redis
+          property: connectionString
+      - type: redis
+        name: celery-redis
+        region: oregon
+        plan: starter # we choose a plan with persistence to ensure tasks are not lost upon restart
+        maxmemoryPolicy: noeviction # recommended policy for queues
+        ipAllowList: [ ] # only allow internal connections
