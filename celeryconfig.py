@@ -16,6 +16,6 @@ beat_schedule = {
     },
     "get-challenger-summoner-ids": {
         "task": "accounts.tasks.run_load_random_challenger_summoner_ids",
-        "schedule": crontab(hour="7", minute="0"),
+        "schedule": crontab(hour="23", minute="0"),
     },
 }
