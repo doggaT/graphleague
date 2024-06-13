@@ -10,7 +10,7 @@ services:
     region: oregon
     runtime: python
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "celery --app tasks worker --loglevel info --concurrency 4"
+    startCommand: "celery --app graphleague.celery_app worker --loglevel info --concurrency 4"
     autoDeploy: false
     envVars:
       - key: CELERY_BROKER_URL
@@ -44,7 +44,7 @@ services:
     plan: free
     runtime: python
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "celery flower --app tasks --loglevel info"
+    startCommand: "celery flower --app graphleague.celery_app tasks --loglevel info"
     autoDeploy: false
     envVars:
       - key: CELERY_BROKER_URL
