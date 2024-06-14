@@ -1,5 +1,6 @@
 import logging
 import requests
+from celery.utils.log import get_task_logger
 from django.contrib.auth.models import User
 from django.db import models, IntegrityError
 from api.models import RiotAPI
@@ -7,6 +8,7 @@ from api.models import RiotAPI
 riot_api = RiotAPI()
 
 logger = logging.getLogger(__name__)
+celery_logger = get_task_logger(__name__)
 
 
 class Accounts(models.Model):
@@ -48,12 +50,12 @@ class Accounts(models.Model):
                     }
                 )
                 if created:
-                    logger.info(f"Summoner ID {summoner_id['summonerId']} added")
+                    celery_logger.info(f"Summoner ID {summoner_id['summonerId']} added")
                 else:
-                    logger.info(f"Summoner ID {summoner_id['summonerId']} already exists")
+                    celery_logger.info(f"Summoner ID {summoner_id['summonerId']} already exists")
         except requests.exceptions.HTTPError as e:
             if e.response.status_code == 429:
-                logger.error(f"Rate limit exceeded, retrying...")
+                celery_logger.error(f"Rate limit exceeded, retrying...")
                 raise
 
     @staticmethod
