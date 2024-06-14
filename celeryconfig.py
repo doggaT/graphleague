@@ -4,8 +4,8 @@ from celery.schedules import crontab
 
 load_dotenv()
 
-broker_url = os.environ.get("CELERY_BROKER_URL", "redis://localhost:6379/0")
-result_backend = os.environ.get("CELERY_BROKER_URL", "redis://localhost:6379/0")
+broker_url = "redis://localhost:6379/0" # os.environ.get("CELERY_BROKER_URL", "redis://localhost:6379/0")
+result_backend = "redis://localhost:6379/0" # os.environ.get("CELERY_BROKER_URL", "redis://localhost:6379/0")
 broker_connection_retry_on_startup = True
 timezone = "UTC"
 

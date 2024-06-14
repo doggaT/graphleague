@@ -100,12 +100,15 @@ DATABASES = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.environ.get("CELERY_BROKER_URL", "redis://localhost:6379/0"),
+        "LOCATION": "redis://localhost:6379/0", #os.environ.get("CELERY_BROKER_URL", "redis://localhost:6379/0"),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     }
 }
+
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
 
 TEST_RUNNER = "django.test.runner.DiscoverRunner"
 
