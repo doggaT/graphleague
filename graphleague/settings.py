@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_celery_results",
     "django_filters",
     "accounts",
     "player",
@@ -100,7 +101,7 @@ DATABASES = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.environ.get("CELERY_broker_url", "redis://localhost:6379/0"),
+        "LOCATION": os.environ.get("CELERY_BROKER_URL", "redis://localhost:6379/0"),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -162,6 +163,7 @@ if not DEBUG:
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CELERY_broker_url = os.environ.get("CELERY_broker_url")
+CELERY_result_backend = os.environ.get("CELERY_broker_url")
 accept_content = ["application/json"]
 result_serializer = "json"
 task_serializer = "json"

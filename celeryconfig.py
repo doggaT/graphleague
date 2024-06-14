@@ -16,7 +16,7 @@ beat_schedule = {
     },
     "get-challenger-summoner-ids": {
         "task": "accounts.tasks.run_load_random_challenger_summoner_ids",
-        "schedule": crontab(hour="13", minute="30"),
+        "schedule": crontab(hour="18", minute="30"),
     },
     "get-grandmaster-summoner-ids": {
         "task": "accounts.tasks.run_load_random_grandmaster_summoner_ids",

@@ -29,8 +29,7 @@ class Accounts(models.Model):
         """Get challenger summoner ids for each platform."""
         try:
             response = riot_api.fetch_challenger_league_data(platform, queue)
-
-            challengers_summoner_ids = response.json()["entries"]
+            challengers_summoner_ids = response["entries"]
             for summoner_id in challengers_summoner_ids:
                 account, created = Accounts.objects.get_or_create(
                     summoner_id=summoner_id,
@@ -62,7 +61,7 @@ class Accounts(models.Model):
         try:
             response = riot_api.fetch_grandmaster_league_data(platform, queue)
 
-            challengers_summoner_ids = response.json()["entries"]
+            challengers_summoner_ids = response["entries"]
             for summoner_id in challengers_summoner_ids:
                 account, created = Accounts.objects.get_or_create(
                     summoner_id=summoner_id,
@@ -94,7 +93,7 @@ class Accounts(models.Model):
         try:
             response = riot_api.fetch_master_league_data(platform, queue)
 
-            challengers_summoner_ids = response.json()["entries"]
+            challengers_summoner_ids = response["entries"]
             for summoner_id in challengers_summoner_ids:
                 account, created = Accounts.objects.get_or_create(
                     summoner_id=summoner_id,
@@ -126,7 +125,7 @@ class Accounts(models.Model):
         try:
             response = riot_api.fetch_league_data(platform, queue, tier, division)
 
-            challengers_summoner_ids = response.json()["entries"]
+            challengers_summoner_ids = response["entries"]
             for summoner_id in challengers_summoner_ids:
                 account, created = Accounts.objects.get_or_create(
                     summoner_id=summoner_id,
