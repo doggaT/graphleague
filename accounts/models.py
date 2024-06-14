@@ -31,8 +31,9 @@ class Accounts(models.Model):
             response = riot_api.fetch_challenger_league_data(platform, queue)
             challengers_summoner_ids = response["entries"]
             for summoner_id in challengers_summoner_ids:
+                print()
                 account, created = Accounts.objects.get_or_create(
-                    summoner_id=summoner_id,
+                    summoner_id=summoner_id["summonerId"],
                     defaults={
                         "user_id": None,
                         "game_name": None,
@@ -47,9 +48,9 @@ class Accounts(models.Model):
                     }
                 )
                 if created:
-                    logger.info(f"Summoner ID {summoner_id} added")
+                    logger.info(f"Summoner ID {summoner_id['summonerId']} added")
                 else:
-                    logger.info(f"Summoner ID {summoner_id} already exists")
+                    logger.info(f"Summoner ID {summoner_id['summonerId']} already exists")
         except requests.exceptions.HTTPError as e:
             if e.response.status_code == 429:
                 logger.error(f"Rate limit exceeded, retrying...")
@@ -64,7 +65,7 @@ class Accounts(models.Model):
             challengers_summoner_ids = response["entries"]
             for summoner_id in challengers_summoner_ids:
                 account, created = Accounts.objects.get_or_create(
-                    summoner_id=summoner_id,
+                    summoner_id=summoner_id["summonerId"],
                     defaults={
                         "user_id": None,
                         "game_name": None,
@@ -79,9 +80,9 @@ class Accounts(models.Model):
                     }
                 )
                 if created:
-                    logger.info(f"Summoner ID {summoner_id} added")
+                    logger.info(f"Summoner ID {summoner_id['summonerId']} added")
                 else:
-                    logger.info(f"Summoner ID {summoner_id} already exists")
+                    logger.info(f"Summoner ID {summoner_id['summonerId']} already exists")
         except requests.exceptions.HTTPError as e:
             if e.response.status_code == 429:
                 logger.error(f"Rate limit exceeded, retrying...")
@@ -96,7 +97,7 @@ class Accounts(models.Model):
             challengers_summoner_ids = response["entries"]
             for summoner_id in challengers_summoner_ids:
                 account, created = Accounts.objects.get_or_create(
-                    summoner_id=summoner_id,
+                    summoner_id=summoner_id["summonerId"],
                     defaults={
                         "user_id": None,
                         "game_name": None,
@@ -111,9 +112,9 @@ class Accounts(models.Model):
                     }
                 )
                 if created:
-                    logger.info(f"Summoner ID {summoner_id} added")
+                    logger.info(f"Summoner ID {summoner_id['summonerId']} added")
                 else:
-                    logger.info(f"Summoner ID {summoner_id} already exists")
+                    logger.info(f"Summoner ID {summoner_id['summonerId']} already exists")
         except requests.exceptions.HTTPError as e:
             if e.response.status_code == 429:
                 logger.error(f"Rate limit exceeded, retrying...")
@@ -128,7 +129,7 @@ class Accounts(models.Model):
             challengers_summoner_ids = response["entries"]
             for summoner_id in challengers_summoner_ids:
                 account, created = Accounts.objects.get_or_create(
-                    summoner_id=summoner_id,
+                    summoner_id=summoner_id["summonerId"],
                     defaults={
                         "user_id": None,
                         "game_name": None,
@@ -143,9 +144,9 @@ class Accounts(models.Model):
                     }
                 )
                 if created:
-                    logger.info(f"Summoner ID {summoner_id} added")
+                    logger.info(f"Summoner ID {summoner_id['summonerId']} added")
                 else:
-                    logger.info(f"Summoner ID {summoner_id} already exists")
+                    logger.info(f"Summoner ID {summoner_id['summonerId']} already exists")
         except requests.exceptions.HTTPError as e:
             if e.response.status_code == 429:
                 logger.error(f"Rate limit exceeded, retrying...")
@@ -175,9 +176,9 @@ class Accounts(models.Model):
                     }
                 )
                 if created:
-                    logger.info(f"Summoner ID {summoner_id} added")
+                    logger.info(f"Summoner ID {summoner_id['summonerId']} added")
                 else:
-                    logger.info(f"Summoner ID {summoner_id} already exists")
+                    logger.info(f"Summoner ID {summoner_id['summonerId']} already exists")
 
             except requests.exceptions.HTTPError as e:
                 if e.response.status_code == 429:
