@@ -9,7 +9,7 @@ riot_api = RiotAPI()
 logger = logging.getLogger(__name__)
 
 
-class Account:
+class Accounts(models.Model):
     objects = models.Manager()
 
     user_id = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
@@ -21,6 +21,8 @@ class Account:
     profile_icon_id = models.CharField(null=True)
     revision_date = models.CharField(null=True)
     summoner_level = models.IntegerField(null=True)
+    region = models.CharField(null=True)
+    platform = models.CharField(null=True)
 
     @staticmethod
     def load_random_challenger_summoner_ids(platform, queue):
@@ -30,7 +32,7 @@ class Account:
 
             challengers_summoner_ids = response.json()["entries"]
             for summoner_id in challengers_summoner_ids:
-                account, created = Account.objects.get_or_create(
+                account, created = Accounts.objects.get_or_create(
                     summoner_id=summoner_id,
                     defaults={
                         "user_id": None,
@@ -40,7 +42,9 @@ class Account:
                         "account_id": None,
                         "profile_icon_id": None,
                         "revision_date": None,
-                        "summoner_level": None
+                        "summoner_level": None,
+                        "region": None,
+                        "platform": platform
                     }
                 )
                 if created:
@@ -53,14 +57,14 @@ class Account:
                 raise
 
     @staticmethod
-    def load_random_grandmaster_summoner_ids_by_platform(platform, queue):
+    def load_random_grandmaster_summoner_ids(platform, queue):
         """Get grandmaster summoner ids for each platform."""
         try:
             response = riot_api.fetch_grandmaster_league_data(platform, queue)
 
             challengers_summoner_ids = response.json()["entries"]
             for summoner_id in challengers_summoner_ids:
-                account, created = Account.objects.get_or_create(
+                account, created = Accounts.objects.get_or_create(
                     summoner_id=summoner_id,
                     defaults={
                         "user_id": None,
@@ -70,7 +74,9 @@ class Account:
                         "account_id": None,
                         "profile_icon_id": None,
                         "revision_date": None,
-                        "summoner_level": None
+                        "summoner_level": None,
+                        "region": None,
+                        "platform": platform
                     }
                 )
                 if created:
@@ -83,14 +89,14 @@ class Account:
                 raise
 
     @staticmethod
-    def load_random_master_summoner_ids_by_platform(platform, queue):
+    def load_random_master_summoner_ids(platform, queue):
         """Get master summoner ids for each platform."""
         try:
             response = riot_api.fetch_master_league_data(platform, queue)
 
             challengers_summoner_ids = response.json()["entries"]
             for summoner_id in challengers_summoner_ids:
-                account, created = Account.objects.get_or_create(
+                account, created = Accounts.objects.get_or_create(
                     summoner_id=summoner_id,
                     defaults={
                         "user_id": None,
@@ -100,7 +106,9 @@ class Account:
                         "account_id": None,
                         "profile_icon_id": None,
                         "revision_date": None,
-                        "summoner_level": None
+                        "summoner_level": None,
+                        "region": None,
+                        "platform": platform
                     }
                 )
                 if created:
@@ -113,14 +121,14 @@ class Account:
                 raise
 
     @staticmethod
-    def load_random_league_summoner_ids_by_platform(platform, queue, tier, division):
+    def load_random_league_summoner_ids(platform, queue, tier, division):
         """Get league summoner ids for each platform."""
         try:
             response = riot_api.fetch_league_data(platform, queue, tier, division)
 
             challengers_summoner_ids = response.json()["entries"]
             for summoner_id in challengers_summoner_ids:
-                account, created = Account.objects.get_or_create(
+                account, created = Accounts.objects.get_or_create(
                     summoner_id=summoner_id,
                     defaults={
                         "user_id": None,
@@ -130,7 +138,9 @@ class Account:
                         "account_id": None,
                         "profile_icon_id": None,
                         "revision_date": None,
-                        "summoner_level": None
+                        "summoner_level": None,
+                        "region": None,
+                        "platform": platform
                     }
                 )
                 if created:
@@ -150,7 +160,7 @@ class Account:
                 response = riot_api.fetch_summoner_data(platform, summoner_id)
                 data = response.json()
 
-                account, created = Account.objects.get_or_create(
+                account, created = Accounts.objects.get_or_create(
                     summoner_id=data["id"],
                     defaults={
                         "user_id": None,
@@ -160,7 +170,9 @@ class Account:
                         "account_id": data["accountId"],
                         "profile_icon_id": data["profileIconId"],
                         "revision_date": data["revisionDate"],
-                        "summoner_level": data["summonerLevel"]
+                        "summoner_level": data["summonerLevel"],
+                        "region": None,
+                        "platform": platform
                     }
                 )
                 if created:
