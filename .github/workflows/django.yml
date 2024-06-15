@@ -44,7 +44,7 @@ jobs:
     - name: Setup Redis
       run: sudo apt-get install -y redis-tools redis-server
     - name: Check Redis is up
-      run: redis-cli plig
+      run: redis-cli ping
     - name: Run Tests
       run: pytest --cov
       env:
