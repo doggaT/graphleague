@@ -28,11 +28,10 @@
           {% if user.is_authenticated %}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              {{ user.username }}
+              {{ user.username.capitalize }}
             </a>
             <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
-              <li><a class="dropdown-item" href="#">Account</a></li>
-              <li><a class="dropdown-item" href="#">Favourites</a></li>
+              <li><a class="dropdown-item" href="{% url 'settings' %}">Settings</a></li>
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
             </ul>

@@ -61,6 +61,7 @@ class RiotAPI:
         response = requests.get(self.LEAGUES_URL.format(platform, queue, tier, division),
                                 headers=self.headers())
         response.raise_for_status()
+        print(response.json())
         return response.json()
 
     @retry(wait=wait_fixed(60) + wait_random(0, 60), retry=retry_if_exception(rate_limit_exceeded),
@@ -103,7 +104,7 @@ class RiotAPI:
     @retry(wait=wait_fixed(60) + wait_random(0, 60), retry=retry_if_exception(rate_limit_exceeded),
            stop=stop_after_attempt(10), reraise=True)
     def fetch_account_data_by_riot_id(self, region, game_name, tag_line):
-        response = requests.get(self.SUMMONER_URL.format(region, game_name, tag_line),
+        response = requests.get(self.ACCOUNT_BY_RIOT_ID.format(region, game_name, tag_line),
                                 headers=self.headers())
         response.raise_for_status()
         return response.json()
@@ -112,7 +113,7 @@ class RiotAPI:
 class Region:
     AMERICAS = ("americas", "Americas")
     ASIA = ("asia", "Asia")
-    EUROPE = ("europe", "EUROPE")
+    EUROPE = ("europe", "Europe")
     SEA = ("sea", "SEA")
 
     @classmethod
