@@ -16,14 +16,10 @@ class AccountTests(TestCase):
         self.register_url = reverse("register")
         self.login_url = reverse("login")
         self.home_url = reverse("home")
-        self.me_url = reverse("me")
         self.logout_url = reverse("logout")
+        self.settings_url = reverse("settings")
 
         self.user = User.objects.create_user(username=self.username, email=self.email, password=self.password)
-
-    def test_home_requires_login(self):
-        response = self.client.get(self.me_url)
-        self.assertRedirects(response, f"{self.login_url}?next={self.me_url}")
 
     def test_register_view(self):
         response = self.client.get(self.register_url)
@@ -83,3 +79,7 @@ class AccountTests(TestCase):
         self.client.login(username=self.username, password=self.password)
         response = self.client.get(self.logout_url)
         self.assertRedirects(response, self.home_url)
+
+    def test_settings_requires_login(self):
+        response = self.client.get(self.settings_url)
+        self.assertRedirects(response, f"{self.login_url}?next={self.settings_url}")
