@@ -5,15 +5,10 @@ from .forms import CreateUserForm, LoginUserForm, UpdateSettingsForm
 from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+
 from .models import Accounts
 
-
 logger = logging.getLogger(__name__)
-
-
-@login_required(login_url="login")
-def home(request):
-    return render(request, "accounts/me.html")
 
 
 def register(request):
@@ -61,23 +56,22 @@ def logout_user(request):
     return redirect("home")
 
 
+@login_required(login_url="login")
 def settings(request):
     accounts = Accounts()
-    form = UpdateSettingsForm()
 
-    if request.user.is_authenticated:
-        user_account = accounts.get_game_name_tag_line_by_user_id(request.user.id)
+    user_account = accounts.get_game_name_tag_line_by_user_id(request.user.id)
+    form = UpdateSettingsForm(instance=user_account)
+
+    if request.method == "POST":
         form = UpdateSettingsForm(request.POST, instance=user_account)
-
-        if request.method == "POST":
-            form = UpdateSettingsForm(request.POST, instance=user_account)
-            if form.is_valid():
-                form.save()
-                game_name = form.cleaned_data["game_name"]
-                tag_line = form.cleaned_data["tag_line"]
-                region = form.cleaned_data["region"]
-                logger.info(f"Updated game name {game_name} and tag line {tag_line}")
-                accounts.add_or_update_game_name_tag_line(request.user.id, region, game_name, tag_line)
+        if form.is_valid():
+            form.save()
+            game_name = form.cleaned_data["game_name"]
+            tag_line = form.cleaned_data["tag_line"]
+            region = form.cleaned_data["region"]
+            logger.info(f"Updated game name {game_name} and tag line {tag_line}")
+            accounts.add_or_update_game_name_tag_line(request.user.id, region, game_name, tag_line)
 
     context = {"form": form}
 
