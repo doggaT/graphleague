@@ -1,3 +1,4 @@
+[MESSAGES CONTROL]
 disable=
     too-many-instance-attributes,
     len-as-condition,
@@ -79,4 +80,13 @@ disable=
     missing-docstring,
     invalid-name,
     bad-whitespace,
-    consider-using-enumerate
+    consider-using-enumerate,
+    W0611,
+    W0612,
+    C0301,
+    C0103,
+    C0114,
+    C0115,
+    C0116,
+    E0401,
+    R0903
