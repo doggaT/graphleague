@@ -66,11 +66,14 @@ class RiotAPI:
 
     @retry(wait=wait_fixed(60) + wait_random(0, 60), retry=retry_if_exception(rate_limit_exceeded),
            stop=stop_after_attempt(10), reraise=True)
-    def fetch_summoner_matches_data(self, region, puuid, queue_id=None, count=20):
+    def fetch_summoner_matches_data(self, region, puuid, match_type=None, queue_id=None, count=20):
         params = {"count": count}
 
         if queue_id:
             params["queue"] = queue_id
+
+        if match_type:
+            params["type"] = match_type
 
         response = requests.get(self.SUMMONER_MATCHES_URL.format(region, puuid),
                                 headers=self.headers(), params=params)
@@ -108,6 +111,14 @@ class RiotAPI:
                                 headers=self.headers())
         response.raise_for_status()
         return response.json()
+
+    class Static:
+        QUEUES_URL = "https://static.developer.riotgames.com/docs/lol/queues.json"
+
+        def fetch_queues(self):
+            response = requests.get(self.QUEUES_URL)
+            response.raise_for_status()
+            return response.json()
 
 
 class Region:
