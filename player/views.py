@@ -2,7 +2,6 @@ import time
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-
 from api.models import RiotAPI
 from match.models import Match
 from player.utils import get_time_since
@@ -37,14 +36,5 @@ def my_stats(request):
                 my_info = summoner
                 parsed_matches.append(my_info)
 
-        print(queue_name)
-
-    # with open("match.json", "w") as mt:
-    #     json.dump(matches[0], mt, indent=3, sort_keys=True)
-    # print(json.dumps(matches[0], indent=3))
-
-    # for m in matches:
-    #     participants_ids = m["metadata"]["participants"]
-    #     info = m["info"]
     context = {"matches": parsed_matches}
     return render(request, "my-stats.html", context)

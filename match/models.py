@@ -1,7 +1,6 @@
-from django.db import models
-
+from django.db.models import Q
 from accounts.models import Accounts
-from api.models import RiotAPI
+from api.models import RiotAPI, RegionToPlatform
 
 
 class Match:
@@ -20,5 +19,21 @@ class Match:
 
         return None
 
-    def get_matches_details(self, region, match_id):
-        pass
+    def get_matches_by_puuid(self, queue=None):
+        platform_not_null = Q(platform__isnull=False)
+        puuid_not_null = Q(puuid__isnull=False)
+        user_account = Accounts.objects.filter(platform_not_null and puuid_not_null)[:50]
+        summoner_matches = []
+
+        for account in user_account:
+            region = RegionToPlatform.get_region(account.platform)
+            matches = self.riot_api.fetch_summoner_matches_data(region, account.puuid, match_type=queue,
+                                                                queue_id=420, count=10)
+            for match_id in matches:
+                response = self.riot_api.fetch_match_data(region, match_id)
+                summoner_matches.append(response)
+        return summoner_matches
+
+    # def get_matches_details(self, region, match_id):
+    #     response = self.riot_api.fetch_match_data(user_account.region, match_id)
+    #     return summoner_matches

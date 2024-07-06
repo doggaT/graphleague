@@ -162,6 +162,24 @@ class Platform:
         return [value[0] for key, value in cls.__dict__.items() if not key.startswith('_') and isinstance(value, tuple)]
 
 
+class RegionToPlatform:
+    AMERICAS = ("AMERICAS", ["br1", "la1", "la2", "na1"])
+    ASIA = ("ASIA", ["jp1", "kr", "tw2"])
+    EUROPE = ("EUROPE", ["eun1", "euw1", "tr1"])
+    SEA = ("SEA", ["oc1", "ph2", "vn2", "sg2", "th2"])
+
+    @classmethod
+    def all(cls):
+        return [cls.AMERICAS, cls.ASIA, cls.EUROPE, cls.SEA]
+
+    @classmethod
+    def get_region(cls, platform):
+        for region, platforms in cls.all():
+            if platform in platforms:
+                return region
+        return None
+
+
 class Ranked:
     SOLO_5x5 = "RANKED_SOLO_5x5"
     FLEX_SR = "RANKED_FLEX_SR"

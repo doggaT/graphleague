@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     "accounts",
     "player",
     "champion",
-    "match"
+    "match",
+    "overview"
 ]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
