@@ -4,6 +4,6 @@ from overview.models import TierList
 
 def index(request):
     tier_list = TierList()
-    tier_list.build_tier_list()
-    context = {}
+    tl = tier_list.get_rates()
+    context = {"tier_list": tl}
     return render(request, "index.html", context)

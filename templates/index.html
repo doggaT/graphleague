@@ -1,11 +1,39 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container">
-    <h1 class="mt-5">Overview</h1>
+    <h1 class="mt-5">Tier List</h1>
     <div class="d-flex mt-3">
         <input class="form-control form-control-lg" type="text" placeholder="Search for a player" id="inputLarge">
         <button type="submit" class="btn btn-secondary">Submit</button>
     </div>
-    {{ all }}
+    <div class="d-flex mt-5 justify-content-center">
+        <table class="table align-middle table-hover mx-auto">
+            <thead>
+                <tr >
+                    <th scope="col">Champion</th>
+                    <th scope="col">Win Rate</th>
+                    <th scope="col">Pick Rate</th>
+                    <th scope="col">Ban Rate</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for champion in tier_list %}
+                <tr>
+                    <td scope="row">
+                        <a class="nav-link" href="{% url 'champion' champion=champion.champion_id.champion_key %}">
+                            <img src="{{ champion.champion_id.icon_url }}" alt="{{ champion.champion_id.champion_name }}"
+                                 width="30em" />
+                            {{ champion.champion_id.champion_name }}
+                        </a>
+                    </td>
+                    <td scope="row">{{ champion.win_rate }}</td>
+                    <td scope="row">{{ champion.pick_rate }}</td>
+                    <td scope="row">{{ champion.ban_rate }}</td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}

@@ -59,6 +59,22 @@ class TierList(models.Model):
         logger.info(f"Calculating pick rate for champion {champion.riot_id}")
         return champion.picks / champion.games if champion.games > 0 else 0
 
+    @staticmethod
+    def get_rates():
+        champions = TierList.objects.all()
+        c = []
+        for champion in champions:
+            win_rate = champion.wins / champion.games if champion.games > 0 else 0
+            pick_rate = champion.picks / champion.games if champion.games > 0 else 0
+            ban_rate = champion.bans / champion.games if champion.games > 0 else 0
+            c.append({
+                "champion_id": champion.riot_id,
+                "win_rate": f"{win_rate: .2%}",
+                "pick_rate": f"{pick_rate: .2%}",
+                "ban_rate": f"{ban_rate: .2%}"
+            })
+        return c
+
     def build_tier_list(self):
         matches = match.get_matches_by_puuid()
         for m in matches:
