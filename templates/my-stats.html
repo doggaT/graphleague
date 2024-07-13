@@ -1,13 +1,154 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container">
+<div class="container mt-4">
     <h1 class="mt-5 mb-5">My Stats</h1>
-        {% if matches.length > 0 %}
-            <p>Acho</p>
+    <div class="d-flex flex-column gap-3">
+        {% if matches %}
+        {% for match in matches %}
+        <a class="nav-link" href="#">
+            <div class="card bg-dark text-white">
+                <div class="card-body">
+                    <div class="row d-flex justify-content-between">
+                        <div class="col-md-auto d-flex flex-column align-self-center">
+                            <div>{{ match.queue_name }}</div>
+                            <div>{{ match.time_since_end }}</div>
+                            {% if match.my_info.win %}
+                            <div class="text-success">Victory</div>
+                            {% elif not match.my_info.win %}
+                            <div class="text-danger">Defeat</div>
+                            {% endif %}
+                            <div class="duration">{{ match.game_duration }}s</div>
+                        </div>
+                        <div class="col-md-auto d-flex flex-column align-items-center align-self-center">
+                            <div class="d-flex gap-2 align-items-center">
+                                <div class="position-relative">
+                                    {% for champion in champions %}
+                                    {% if champion.riot_id == match.my_info.championId %}
+                                    <img src="{{ champion.icon_url }}" width="40rem" alt="Champion" class="img-fluid">
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <div class="ml-3">
+                                    <span>{{ match.my_info.kills }}</span> /
+                                    <span>{{ match.my_info.deaths }}</span> /
+                                    <span>{{ match.my_info.assists }}</span>
+                                    <div>{{ match.my_info.challenges.kda | floatformat:2 }} KDA</div>
+                                </div>
+                                <div>
+                                    <div>
+                                        Kill / P {% widthratio match.my_info.challenges.killParticipation 1 100 %}%
+                                    </div>
+                                    <div>CS {{ match.my_info.totalMinionsKilled }}</div>
+                                </div>
+                            </div>
+                            <div class="items d-flex align-self-center gap-1 mt-1">
+                                <div class="bg-primary">
+                                    <img src="https://ddragon.leagueoflegends.com/cdn/14.13.1/img/item/{{match.my_info.item0}}.png"
+                                         alt="" width="30rem" class="item img-fluid">
+                                </div>
+                                <div class="bg-primary">
+                                    <img src="https://ddragon.leagueoflegends.com/cdn/14.13.1/img/item/{{match.my_info.item1}}.png"
+                                         alt="" width="30rem" class="item img-fluid">
+                                </div>
+                                <img src="https://ddragon.leagueoflegends.com/cdn/14.13.1/img/item/{{match.my_info.item2}}.png"
+                                     alt="" width="30rem" class="item img-fluid">
+                                <div class="bg-primary">
+                                    <img src="https://ddragon.leagueoflegends.com/cdn/14.13.1/img/item/{{match.my_info.item3}}.png"
+                                         alt="" width="30rem" class="item img-fluid">
+                                </div>
+                                <div class="bg-primary">
+                                    <img src="https://ddragon.leagueoflegends.com/cdn/14.13.1/img/item/{{match.my_info.item4}}.png"
+                                         alt="" width="30rem" class="item img-fluid">
+                                </div>
+                                <div class="bg-primary">
+                                    <img src="https://ddragon.leagueoflegends.com/cdn/14.13.1/img/item/{{match.my_info.item5}}.png"
+                                         alt="" width="30rem" class="item img-fluid">
+                                </div>
+                                <div class="bg-primary">
+                                    <img src="https://ddragon.leagueoflegends.com/cdn/14.13.1/img/item/{{match.my_info.item6}}.png"
+                                         alt="" width="30rem" class="item img-fluid">
+                                </div>
+                            </div>
+                            <div class="d-flex align-self-center gap-3 mt-3">
+                                <div class="d-flex align-self-center gap-1">
+                                    <div class="bg-primary">
+                                        {% for key, value in summoner_spells.items %}
+                                        {% if match.my_info.summoner1Id|slugify == value.key %}
+                                        <img src="https://ddragon.leagueoflegends.com/cdn/14.13.1/img/spell/{{value.id}}.png"
+                                             alt="" width="30rem" class="item img-fluid">
+                                        {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <div class="bg-primary">{% for key, value in summoner_spells.items %}
+                                        {% if match.my_info.summoner2Id|slugify == value.key %}
+                                        <img src="https://ddragon.leagueoflegends.com/cdn/14.13.1/img/spell/{{value.id}}.png"
+                                             alt="" width="30rem" class="item img-fluid">
+                                        {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="d-flex align-self-center gap-1">
+                                    {% for style in match.my_info.perks.styles %}
+                                    {% for rune in runes %}
+                                    {% if style.style == rune.id %}
+                                    <div>
+                                        <img src="https://ddragon.leagueoflegends.com/cdn/img/{{rune.icon}}"
+                                             alt="" width="25rem" class="item img-fluid">
+                                    </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-5 d-flex flex-column align-self-center">
+                            <div class="row mt-3">
+                                <div class="col">
+                                    {% for participant in match.participants %}
+                                    {% for champion in champions %}
+                                    {% if champion.riot_id == participant.championId %}
+                                    {% if participant.win %}
+                                    <div class="d-flex align-items-center gap-2 column text-success">
+                                        <div>
+                                            <img src="{{ champion.icon_url }}" width="30rem">
+                                        </div>
+                                        <span class="text-center">{{ participant.riotIdGameName }}</span>
+                                    </div>
+                                    {% endif %}
+                                    {% endif %}
+                                    {% endfor %}
+                                    {% endfor %}
+                                </div>
+                                <div class="col-5">
+                                    {% for participant in match.participants %}
+                                    {% for champion in champions %}
+                                    {% if champion.riot_id == participant.championId %}
+                                    {% if not participant.win %}
+                                    <div class="d-flex align-items-center gap-2 column text-danger">
+                                        <div>
+                                            <img src="{{ champion.icon_url }}" width="30rem">
+                                        </div>
+                                        <span class="text-center">{{ participant.riotIdGameName }}</span>
+                                    </div>
+                                    {% endif %}
+                                    {% endif %}
+                                    {% endfor %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
         {% else %}
         <div>
-            <p>Please go to <a href="{% url 'settings' %}">Settings</a> and add your Summoner Name and Tag to see more.</p>
+            <p>
+                Please go to <a href="{% url 'settings' %}">Settings</a> and add your Summoner Name and Tag to see more.
+            </p>
         </div>
         {% endif %}
+    </div>
 </div>
 {% endblock %}

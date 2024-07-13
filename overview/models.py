@@ -1,5 +1,4 @@
 import logging
-
 from celery.utils.log import get_task_logger
 from django.contrib.postgres.fields import ArrayField
 from django.db import models, transaction
@@ -89,6 +88,6 @@ class TierList(models.Model):
                 for ban in team["bans"]:
                     champion_id = ban["championId"]
                     # if the player did not ban a champion, the champion_id will be -1
-                    if champion_id is not -1:
+                    if champion_id != -1:
                         celery_logger.info(f"Attempting to save stats for champion {champion_id}")
                         self.save_match_info(champion_id, ban=True)

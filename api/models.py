@@ -114,9 +114,21 @@ class RiotAPI:
 
     class Static:
         QUEUES_URL = "https://static.developer.riotgames.com/docs/lol/queues.json"
+        SUMMONER_SPELLS_URL = "https://ddragon.leagueoflegends.com/cdn/14.13.1/data/en_US/summoner.json"
+        RUNES_URL = "http://ddragon.leagueoflegends.com/cdn/14.13.1/data/en_US/runesReforged.json"
 
         def fetch_queues(self):
             response = requests.get(self.QUEUES_URL)
+            response.raise_for_status()
+            return response.json()
+
+        def fetch_summoner_spells(self):
+            response = requests.get(self.SUMMONER_SPELLS_URL)
+            response.raise_for_status()
+            return response.json()
+
+        def fetch_runes(self):
+            response = requests.get(self.RUNES_URL)
             response.raise_for_status()
             return response.json()
 

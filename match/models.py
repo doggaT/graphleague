@@ -1,5 +1,3 @@
-import random
-
 from django.db.models import Q
 from accounts.models import Accounts
 from api.models import RiotAPI, RegionToPlatform
@@ -21,11 +19,10 @@ class Match:
 
         return None
 
-    def get_matches_by_puuid(self, queue=None):
-        platform_not_null = Q(platform__isnull=False)
+    def get_matches_by_puuid(self, platform="euw1", queue=None):
+        platform_not_null = Q(platform=platform)
         puuid_not_null = Q(puuid__isnull=False)
-        user_account = Accounts.objects.filter(platform_not_null and puuid_not_null)
-        user_account = random.shuffle(user_account)[:50]
+        user_account = Accounts.objects.filter(platform_not_null and puuid_not_null)[::50]
         summoner_matches = []
 
         for account in user_account:

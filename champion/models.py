@@ -28,6 +28,10 @@ class Champion(models.Model):
     updated_at = models.DateTimeField(auto_now_add=True, null=False)
 
     @staticmethod
+    def get_all_champions():
+        return Champion.objects.all()
+
+    @staticmethod
     def champion_loader():
         logger = logging.getLogger(__name__)
         champions = "http://cdn.merakianalytics.com/riot/lol/resources/latest/en-US/champions.json"
