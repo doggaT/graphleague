@@ -11,6 +11,12 @@ class TeamBuilder:
         self.kmeans = None
         self.scaler = StandardScaler()
 
+    def ban_phase(self):
+        pass
+
+    def pick_phase(self):
+        pass
+
     def collect_data(self):
         champions = TierList.objects.annotate(champion_id=F("riot_id_id")).all()
         data = []
