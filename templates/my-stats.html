@@ -24,7 +24,8 @@
                                 <div class="position-relative">
                                     {% for champion in champions %}
                                     {% if champion.riot_id == match.my_info.championId %}
-                                    <img src="{{ champion.icon_url }}" width="40rem" alt="Champion" class="img-fluid">
+                                    <img src="{{ champion.icon_url }}" width="40rem" alt="{{ champion.champion_name }}"
+                                         class="img-fluid">
                                     {% endif %}
                                     {% endfor %}
                                 </div>
