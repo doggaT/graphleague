@@ -1,45 +1,13 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container">
-    <h1 class="mt-5 mb-5 text-center">Team Builder</h1>
-    <div class="d-flex flex-column justify-content-center">
+    <h1 class="mt-5 mb-5">Team Builder</h1>
+    <div class="d-flex flex-column justify-content-center text-center">
         <div class="d-flex flex-column justify-content-center gap-2">
             <h5 class="text-center">Banned Champions</h5>
             <div class="d-flex flex-row justify-content-around gap-4">
-                <div class="blue d-flex flex-row gap-2">
-                    <div class="bg-primary">
-                        <img src="" alt="" width="45rem" height="45rem">
-                    </div>
-                    <div class="bg-primary">
-                        <img src="" alt="" width="45rem" height="45rem">
-                    </div>
-                    <div class="bg-primary">
-                        <img src="" alt="" width="45rem" height="45rem">
-                    </div>
-                    <div class="bg-primary">
-                        <img src="" alt="" width="45rem" height="45rem">
-                    </div>
-                    <div class="bg-primary">
-                        <img src="" alt="" width="45rem" height="45rem">
-                    </div>
-                </div>
-                <div class="red d-flex flex-row gap-2">
-                    <div class="bg-primary">
-                        <img src="" alt="" width="45rem" height="45rem">
-                    </div>
-                    <div class="bg-primary">
-                        <img src="" alt="" width="45rem" height="45rem">
-                    </div>
-                    <div class="bg-primary">
-                        <img src="" alt="" width="45rem" height="45rem">
-                    </div>
-                    <div class="bg-primary">
-                        <img src="" alt="" width="45rem" height="45rem">
-                    </div>
-                    <div class="bg-primary">
-                        <img src="" alt="" width="45rem" height="45rem">
-                    </div>
-                </div>
+                <div id="blue-bans" class="d-flex flex-row gap-2"></div>
+                <div id="red-bans" class="d-flex flex-row gap-2"></div>
             </div>
         </div>
         <div class="d-flex justify-content-between mt-5 mb-2">
@@ -48,73 +16,173 @@
             <h5>Team Red</h5>
         </div>
         <div class="d-flex justify-content-around gap-2">
-            <div class="blue d-flex flex-column gap-3">
-                <div class="TOP bg-primary">
-                    <img src="" alt="" width="85rem" height="85rem">
+            <div id="blue-team" class="d-flex flex-column gap-3">
+                {% for champion_id in blue_picked %}
+                <div class="bg-primary">
+                    <img src="{{ champ.icon_url }}" alt="{{ champ.champion_name }}" width="85rem" height="85rem">
                 </div>
-                <div class="JUNGLE bg-primary">
-                    <img src="" alt="" width="85rem" height="85rem">
-                </div>
-                <div class="MIDLANE bg-primary">
-                    <img src="" alt="" width="85rem" height="85rem">
-                </div>
-                <div class="ADC bg-primary">
-                    <img src="" alt="" width="85rem" height="85rem">
-                </div>
-                <div class="SUPPORT bg-primary">
-                    <img src="" alt="" width="85rem" height="85rem">
-                </div>
+                {% endfor %}
             </div>
-            <div class="d-flex justify-content-center flex-wrap gap-3 overflow-auto" style="max-height: 500px;">
+            <div class="d-flex justify-content-center flex-wrap gap-3 overflow-auto"
+                 style="max-width:1040px; max-height: 500px;">
                 {% for champion in champions %}
                 <div>
-                    <img src="{{ champion.icon_url }}" alt="{{ champion.champion_name }}" width="80rem"
-                         class="img-fluid">
+                    <button class="btn btn-sm btn-primary mt-2 champion-select" data-id="{{ champion.riot_id }}"
+                            data-name="{{ champion.champion_name }}">
+                        <img src="{{ champion.icon_url }}" alt="{{ champion.champion_name }}" width="80rem"
+                             class="img-fluid">
+                    </button>
                 </div>
                 {% endfor %}
             </div>
             <div>
-                <div class="red d-flex flex-column gap-3">
-                    <div class="TOP bg-primary">
-                        <img src="" alt="" width="85rem" height="85rem">
+                <div id="red-team" class="d-flex flex-column gap-3">
+                    {% for champion_id in red_picked %}
+                    <div class="bg-primary">
+                        <img src="{{ champ.icon_url }}" alt="{{ champ.champion_name }}" width="85rem" height="85rem">
                     </div>
-                    <div class="JUNGLE bg-primary">
-                        <img src="" alt="" width="85rem" height="85rem">
-                    </div>
-                    <div class="MIDLANE bg-primary">
-                        <img src="" alt="" width="85rem" height="85rem">
-                    </div>
-                    <div class="ADC bg-primary">
-                        <img src="" alt="" width="85rem" height="85rem">
-                    </div>
-                    <div class="SUPPORT bg-primary">
-                        <img src="" alt="" width="85rem" height="85rem">
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
         <div class="mt-5">
             <h5 class="text-center">Suggestions</h5>
             <div class="d-flex flex-row justify-content-center gap-4 mt-3 mb-5">
-                <div class="d-flex flex-row gap-4">
-                    <div class="bg-primary">
-                        <img src="" alt="" width="80rem" height="80rem">
-                    </div>
-                    <div class="bg-primary">
-                        <img src="" alt="" width="80rem" height="80rem">
-                    </div>
-                    <div class="bg-primary">
-                        <img src="" alt="" width="80rem" height="80rem">
-                    </div>
-                    <div class="bg-primary">
-                        <img src="" alt="" width="80rem" height="80rem">
-                    </div>
-                    <div class="bg-primary">
-                        <img src="" alt="" width="80rem" height="80rem">
-                    </div>
-                </div>
+                <div id="recommendations" class="d-flex flex-row gap-4"></div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    let blueBanCount = 0;
+    let redBanCount = 0;
+    let bluePickCount = 0;
+    let redPickCount = 0;
+    let banPhase = true;
+    let pickIndex = 0;
+    const maxBans = 5;
+    const maxPicks = 5;
+    const pickOrder = ["blue", "red", "red", "blue", "blue", "red", "red", "blue", "blue", "red"];
+    const pickPosition = ["top", "top", "jungle", "jungle", "middle", "middle", "bottom", "bottom", "support", "support"];
+    const champions = JSON.parse("{{ champions_json|safe|escapejs }}");
+
+    document.querySelectorAll(".champion-select").forEach(button => {
+        button.addEventListener("click", function() {
+            const championId = this.getAttribute("data-id");
+            let body = {}
+
+            if (banPhase) {
+                if (blueBanCount < maxBans) {
+                    blueBanCount++;
+                    body = { "champion_id": championId, "action": "ban", "team": "blue" };
+                } else if (redBanCount < maxBans) {
+                    redBanCount++;
+                    body = { "champion_id": championId, "action": "ban", "team": "red" };
+                }
+
+                if (blueBanCount == maxBans && redBanCount == maxBans) {
+                    banPhase = false;
+                }
+            } else {
+                if (pickIndex < pickOrder.length) {
+                    const team = pickOrder[pickIndex];
+                    const position = pickPosition[pickIndex + 1]
+                    pickIndex++;
+                    if (team === "blue") {
+                        bluePickCount++;
+                    } else {
+                        redPickCount++;
+                    }
+                    body = { "champion_id": championId, "action": "pick", "team": team, "position": position };
+                }
+            }
+
+            fetch("{% url 'champion-select' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{csrf_token}}"
+                },
+                body: JSON.stringify(body)
+            })
+                .then(response => response.json())
+                .then(data => {
+                if (data.success) {
+                    this.disabled = true;
+                    updateBannedChampions(data.blue_banned, data.red_banned);
+                    updatePickedChampions(data.blue_picked, data.red_picked);
+
+                    if (data.recommendations?.length) {
+                        updateChampionRecommendations(data.recommendations);
+                    }
+                }
+            });
+        });
+    });
+
+    function updateBannedChampions(blueBanned, redBanned) {
+        const blueBansContainer = document.getElementById("blue-bans");
+        const redBansContainer = document.getElementById("red-bans");
+        blueBansContainer.innerHTML = "";
+        redBansContainer.innerHTML = "";
+
+        blueBanned.forEach(id => {
+            const champion = champions.find(champ => champ.id == id);
+            const img = document.createElement("img");
+            img.src = champion.icon_url;
+            img.width = 45;
+            img.height = 45;
+            blueBansContainer.appendChild(img);
+        });
+
+        redBanned.forEach(id => {
+            const champion = champions.find(champ => champ.id == id);
+            const img = document.createElement("img");
+            img.src = champion.icon_url;
+            img.width = 45;
+            img.height = 45;
+            redBansContainer.appendChild(img);
+        });
+    }
+
+    function updatePickedChampions(bluePicked, redPicked) {
+        const bluePicksContainer = document.getElementById("blue-team");
+        const redPicksContainer = document.getElementById("red-team");
+        bluePicksContainer.innerHTML = "";
+        redPicksContainer.innerHTML = "";
+
+        bluePicked.forEach(id => {
+            const champion = champions.find(champ => champ.id == id);
+            const img = document.createElement("img");
+            img.src = champion.icon_url;
+            img.width = 85;
+            img.height = 85;
+            bluePicksContainer.appendChild(img);
+        });
+
+        redPicked.forEach(id => {
+            const champion = champions.find(champ => champ.id == id);
+            const img = document.createElement("img");
+            img.src = champion.icon_url;
+            img.width = 85;
+            img.height = 85;
+            redPicksContainer.appendChild(img);
+        });
+    }
+
+    function updateChampionRecommendations(recommendations) {
+        const recommendationContainer = document.getElementById("recommendations");
+        recommendationContainer.innerHTML = "";
+
+        recommendations.forEach(id => {
+            const champion = champions.find(champ => champ.id == id);
+            const img = document.createElement("img");
+            img.src = champion.icon_url;
+            img.width = 80;
+            img.height = 80;
+            recommendationContainer.appendChild(img);
+        });
+    }
+</script>
 {% endblock %}
