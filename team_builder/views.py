@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from champion.models import Champion
+from match.models import Match
 from team_builder.models import TeamBuilder, Draft
 
 logger = logging.getLogger(__name__)
@@ -42,6 +43,11 @@ def team_builder(request):
         "recommendations": recommendations
     }
 
+    if request.user.is_authenticated:
+        match = Match()
+        user_matches, user_account = match.get_my_matches_by_puuid(request.user.id, queue="ranked", count=20)
+        draft.save_user_info(user_matches, user_account)
+
     return render(request, "team-builder.html", context)
 
 
@@ -76,6 +82,8 @@ def champion_select(request):
             blue_picked = draft.get_picked_champions()["blue"]
             red_picked = draft.get_picked_champions()["red"]
             available_picks = draft.get_available_champions()["available_picks"]
+            user_matches = draft.get_user_matches()["user_matches"]
+            user_account = draft.get_user_account()["user_account"]
 
             banned_champions = blue_banned + red_banned
 
@@ -88,11 +96,12 @@ def champion_select(request):
             }
 
             if len(banned_champions) == 10:
-                builder = TeamBuilder()
+                builder = TeamBuilder(user_matches, user_account)
                 builder.collect_data()
                 builder.apply_kmeans()
                 recommendations = builder.recommend_champion(available_picks, banned_champions, position)
                 draft.save_recommendations(recommendations)
+                print(recommendations)
                 json_obj["recommendations"] = recommendations
 
             request.session["draft"] = draft.serialize()

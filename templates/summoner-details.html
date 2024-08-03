@@ -1,15 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container mt-4">
-    <h1 class="mt-5 mb-5">My Stats</h1>
+    <h1 class="mt-5 mb-5">Summoner Matches</h1>
     <div class="d-flex flex-column gap-3">
         {% if matches %}
         {% for match in matches %}
         <form method="POST" action="{{match.match_id}}/">
             {% csrf_token %}
             <input type="hidden" name="match_id" value="{{match.match_id}}">
-            <input type="hidden" name="region" value="{{user.region}}">
-            <input type="hidden" name="puuid" value="{{user.puuid}}">
+            <input type="hidden" name="region" value="{{region}}">
             <button type="submit" class="btn p-0" style="width: 100%;">
                 <div class="card bg-dark text-white">
                     <div class="card-body">
@@ -153,7 +152,7 @@
         {% else %}
         <div>
             <p>
-                Please go to <a href="{% url 'settings' %}">Settings</a> and add your Summoner Name and Tag to see more.
+                There are no matches to display. Please try searching for a different summoner.
             </p>
         </div>
         {% endif %}

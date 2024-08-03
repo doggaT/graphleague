@@ -32,7 +32,7 @@ class AccountTests(TestCase):
             "password1": self.password,
             "password2": self.password
         })
-        self.assertRedirects(response, self.home_url)
+        self.assertRedirects(response, "/")
         new_user = User.objects.get(username=self.username)
         self.assertTrue(new_user)
 
@@ -62,7 +62,7 @@ class AccountTests(TestCase):
             "username": self.username,
             "password": self.password
         })
-        self.assertRedirects(response, self.home_url)
+        self.assertRedirects(response, "/")
 
     def test_login_user_view_invalid_credentials(self):
         response = self.client.post(self.login_url, {
@@ -78,7 +78,7 @@ class AccountTests(TestCase):
     def test_logout_user_view(self):
         self.client.login(username=self.username, password=self.password)
         response = self.client.get(self.logout_url)
-        self.assertRedirects(response, self.home_url)
+        self.assertRedirects(response, "/")
 
     def test_settings_requires_login(self):
         response = self.client.get(self.settings_url)

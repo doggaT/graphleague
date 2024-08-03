@@ -3,7 +3,7 @@ import os
 import requests
 from dotenv import load_dotenv
 from tenacity import retry, wait_fixed, wait_random, retry_if_exception, stop_after_attempt
-from api.utils import rate_limit_exceeded, max_retries_exceeded
+from api.utils import rate_limit_exceeded
 
 load_dotenv()
 logger = logging.getLogger(__name__)
@@ -17,6 +17,7 @@ class RiotAPI:
     MASTER_LEAGUES_URL = "https://{}.api.riotgames.com/lol/league/v4/masterleagues/by-queue/{}"
     LEAGUES_URL = "https://{}.api.riotgames.com/lol/league/v4/entries/{}/{}/{}"
     SUMMONER_URL = "https://{}.api.riotgames.com/lol/summoner/v4/summoners/{}"
+    SUMMONER_BY_PUUID_URL = "https://{}.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/{}"
     SUMMONER_MATCHES_URL = "https://{}.api.riotgames.com/lol/match/v5/matches/by-puuid/{}/ids"
     MATCH_URL = "https://{}.api.riotgames.com/lol/match/v5/matches/{}"
     MATCH_TIMELINE_URL = "https://{}.api.riotgames.com/lol/match/v5/matches/{}/timeline"
@@ -105,17 +106,32 @@ class RiotAPI:
         return response.json()
 
     @retry(wait=wait_fixed(60) + wait_random(0, 60), retry=retry_if_exception(rate_limit_exceeded),
+           stop=stop_after_attempt(100), reraise=True)
+    def fetch_summoner_data_by_puuid(self, platform, puuid):
+        response = requests.get(self.SUMMONER_BY_PUUID_URL.format(platform, puuid),
+                                headers=self.headers())
+        if response.status_code == 404 or response.status_code == 400:
+            return None
+        else:
+            response.raise_for_status()
+        return response.json()
+
+    @retry(wait=wait_fixed(60) + wait_random(0, 60), retry=retry_if_exception(rate_limit_exceeded),
            stop=stop_after_attempt(10), reraise=True)
     def fetch_account_data_by_riot_id(self, region, game_name, tag_line):
         response = requests.get(self.ACCOUNT_BY_RIOT_ID.format(region, game_name, tag_line),
                                 headers=self.headers())
-        response.raise_for_status()
+        if response.status_code == 404 or response.status_code == 400:
+            return None
+        else:
+            response.raise_for_status()
         return response.json()
 
     class Static:
         QUEUES_URL = "https://static.developer.riotgames.com/docs/lol/queues.json"
         SUMMONER_SPELLS_URL = "https://ddragon.leagueoflegends.com/cdn/14.13.1/data/en_US/summoner.json"
         RUNES_URL = "http://ddragon.leagueoflegends.com/cdn/14.13.1/data/en_US/runesReforged.json"
+        PROFILE_ICON_URL = "https://ddragon.leagueoflegends.com/cdn/{}/img/profileicon/{}.png"
 
         def fetch_queues(self):
             response = requests.get(self.QUEUES_URL)
@@ -131,6 +147,9 @@ class RiotAPI:
             response = requests.get(self.RUNES_URL)
             response.raise_for_status()
             return response.json()
+
+        def fetch_profile_icon_url(self, game_version, icon_id):
+            return self.PROFILE_ICON_URL.format(game_version, icon_id)
 
 
 class Region:
@@ -172,6 +191,10 @@ class Platform:
     @classmethod
     def get_all_platforms_internal_names(cls):
         return [value[0] for key, value in cls.__dict__.items() if not key.startswith('_') and isinstance(value, tuple)]
+
+    @classmethod
+    def get_all_platforms(cls):
+        return [value for key, value in cls.__dict__.items() if not key.startswith('_') and isinstance(value, tuple)]
 
 
 class RegionToPlatform:

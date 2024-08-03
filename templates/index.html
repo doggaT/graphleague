@@ -1,38 +1,118 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container">
+<div class="container position-relative">
     <h1 class="mt-5">Tier List</h1>
-    <div class="d-flex mt-3">
-        <input class="form-control form-control-lg" type="text" placeholder="Search for a player" id="inputLarge">
-        <button type="submit" class="btn btn-secondary">Submit</button>
-    </div>
-    <div class="d-flex mt-5 justify-content-center">
-        <table class="table align-middle table-hover mx-auto">
-            <thead>
-            <tr>
-                <th scope="col">Champion</th>
-                <th scope="col">Win Rate</th>
-                <th scope="col">Pick Rate</th>
-                <th scope="col">Ban Rate</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for champion in tier_list %}
-            <tr>
-                <td scope="row">
-                    <a class="nav-link" href="{% url 'champion' champion=champion.champion_id.champion_key %}">
-                        <img src="{{ champion.champion_id.icon_url }}" alt="{{ champion.champion_id.champion_name }}"
-                             width="30em"/>
-                        {{ champion.champion_id.champion_name }}
-                    </a>
-                </td>
-                <td scope="row">{{ champion.win_rate }}</td>
-                <td scope="row">{{ champion.pick_rate }}</td>
-                <td scope="row">{{ champion.ban_rate }}</td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
+    <form method="GET" id="summoner-search-form" action="{% url 'summoner_search' %}">
+        <div class="d-flex mt-3 input-group input-group-lg">
+            <input aria-label="Summoner Name" class="form-control" type="text" placeholder="Summoner Name"
+                   id="summoner_name" required>
+            <input aria-label="Tag Line" class="form-control" type="text" placeholder="#EUW" id="summoner_tag"
+                   aria-describedby="button-addon">
+            <button type="submit" class="btn btn-secondary" id="button-addon">Search</button>
+        </div>
+    </form>
+    <div id="search-results" class="position-absolute" style="width: 98%;"></div>
 </div>
+<div class="d-flex mt-5 justify-content-center">
+    <table class="table align-middle table-hover mx-auto">
+        <thead>
+        <tr>
+            <th scope="col">Champion</th>
+            <th scope="col">Win Rate</th>
+            <th scope="col">Pick Rate</th>
+            <th scope="col">Ban Rate</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for champion in tier_list %}
+        <tr>
+            <td scope="row">
+                <a class="nav-link" href="{% url 'champion' champion=champion.champion_id.champion_key %}">
+                    <img src="{{ champion.champion_id.icon_url }}" alt="{{ champion.champion_id.champion_name }}"
+                         width="30em"/>
+                    {{ champion.champion_id.champion_name }}
+                </a>
+            </td>
+            <td scope="row">{{ champion.win_rate }}</td>
+            <td scope="row">{{ champion.pick_rate }}</td>
+            <td scope="row">{{ champion.ban_rate }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form =  document.getElementById("summoner-search-form");
+        const resultsDiv = document.getElementById("search-results");
+
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
+            const summonerName = document.getElementById("summoner_name").value;
+            const summonerTag = document.getElementById('summoner_tag').value;
+            const url = `{% url "summoner_search" %}?summonerName=${encodeURIComponent(summonerName)}&summonerTag=${encodeURIComponent(summonerTag)}`;
+
+            fetch(url, {method: "GET", headers: {"X-Requested-With": "XMLHttpRequest"}})
+                .then(response => response.json())
+                .then(data => {
+                const resultsDiv = document.getElementById("search-results");
+                resultsDiv.innerHTML = "";
+                resultsDiv.style.display = "block";
+                if (data.results.length > 0) {
+                    data.results.forEach(result => {
+                        let resultElement = `
+                    <form method="POST" action="summoner/${result.puuid}/matches/">
+                      <input type="hidden" name="csrfmiddlewaretoken" value="${getCookie("csrftoken")}">
+                      <input type="hidden" name="region" value="${result.region}">
+                      <button type="submit" class="btn p-0" style="width: 100%;">
+                        <div class="card w-auto bg-dark">
+                          <div class="card-body d-flex gap-4 align-items-center">
+                            <div class="w-25 d-flex gap-2  align-items-center">
+                                <div>
+                                  <img src="${result.profile_icon_url}" width="40rem" class="img-fluid" alt="${result.game_name} icon">
+                                </div>
+                                <div class="align-self-center">${result.game_name}</div>
+                                <div class="align-self-center">#${result.tag_line}</div>
+                            </div>
+                            <div>Level ${result.summoner_level}</div>
+                            <div>${result.platform}</div>
+                          </div>
+                        </div>
+                      </button>
+                    </form>`;
+                        resultsDiv.insertAdjacentHTML("beforeend", resultElement);
+                    });
+                } else {
+                    let resultElement = `<div class="card w-auto bg-dark">
+                                       <div class="card-body d-flex align-items-center">
+                                         <div>No results found</div>
+                                       </div>
+                                     </div>`;
+                    resultsDiv.insertAdjacentHTML("beforeend", resultElement);
+                }
+            });
+        });
+
+        document.addEventListener("click", function(event) {
+            if (!form.contains(event.target) && !resultsDiv.contains(event.target)) {
+                resultsDiv.style.display = "none";
+            }
+        });
+    });
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+            const cookies = document.cookie.split(";");
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
 {% endblock %}

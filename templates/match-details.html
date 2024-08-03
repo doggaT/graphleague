@@ -1,0 +1,403 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h1 class="mt-5">Match Details</h1>
+    <div class="d-flex mt-3 gap-3 justify-content-between flex-column">
+        {% if match %}
+        <div class="card bg-dark text-white w-100">
+            <div class="card-body w-100">
+                <div class="d-flex gap-5 align-items-center">
+                    {% for champion in champions %}
+                    {% if champion.riot_id == match.my_info.championId %}
+                    <div>
+                        <img src="{{ champion.icon_url }}" width="40rem" alt="{{ champion.champion_name }}"
+                             class="img-fluid">
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                    {% if match.my_info.win %}
+                    <div class="text-success">Victory</div>
+                    {% else %}
+                    <div class="text-danger">Defeat</div>
+                    {% endif %}
+                    <div>{{ match.game_duration }}</div>
+                    <div>{{ match.time_since_end }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="card bg-dark text-white w-100">
+            <div class="card-body w-100">
+                <div class="row d-flex align-items-center">
+                    <div id="b-neutral-objectives" class="d-flex align-items-center justify-content-between gap-2">
+                        <div id="team">
+                            <div>Blue Team</div>
+                        </div>
+                        <div id="b-win">
+                            {% if match.blue_team.win %}
+                            <div class="text-success">Victory</div>
+                            {% else %}
+                            <div class="text-danger">Defeat</div>
+                            {% endif %}
+                        </div>
+                        <div id="b-team-numbers" class="d-flex gap-1">
+                            <div>{{ match.blue_team.total_kills }}</div>
+                            /
+                            <div>{{ match.blue_team.total_assists }}</div>
+                            /
+                            <div>{{ match.blue_team.total_deaths }}</div>
+                        </div>
+                        <div id="b-structures" class="d-flex align-items-center gap-3">
+                            <div id="b-towers" class="d-flex align-items-center">
+                                <div class="d-flex align-items-center gap-1">
+                                    <div>
+                                        <img src="https://raw.communitydragon.org/10.9/plugins/rcp-fe-lol-match-history/global/default/tower-100.png"
+                                             alt="Tower" class="img-fluid" width="20rem">
+                                    </div>
+                                    <div>{{ match.blue_team.objectives.tower.kills }}</div>
+                                </div>
+                            </div>
+                            <div id="b-inhibitors" class="d-flex align-items-center">
+                                <div class="d-flex gap-1">
+                                    <div>
+                                        <img src="https://raw.communitydragon.org/10.9/plugins/rcp-fe-lol-match-history/global/default/inhibitor-100.png"
+                                             alt="Inhibitor" class="img-fluid" width="20rem">
+                                    </div>
+                                    <div>{{ match.blue_team.objectives.inhibitor.kills }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="b-neutral-monsters" class="d-flex gap-3">
+                            <div id="b-barons" class="d-flex align-items-center">
+                                <div class="d-flex gap-1">
+                                    <div>
+                                        <img src="https://raw.communitydragon.org/10.9/plugins/rcp-fe-lol-match-history/global/default/baron-100.png"
+                                             alt="Baron" class="img-fluid" width="20rem">
+                                    </div>
+                                    <div>{{ match.blue_team.objectives.baron.kills }}</div>
+                                </div>
+                            </div>
+                            <div id="b-horde" class="d-flex align-items-center">
+                                <div class="d-flex gap-1">
+                                    <div>
+                                        <img src="https://raw.communitydragon.org/10.9/plugins/rcp-fe-lol-match-history/global/default/vilemaw-100.png"
+                                             alt="Horde" class="img-fluid" width="20rem">
+                                    </div>
+                                    <div>{{ match.blue_team.objectives.horde.kills }}</div>
+                                </div>
+                            </div>
+                            <div id="b-shellys" class="d-flex align-items-center">
+                                <div class="d-flex gap-1">
+                                    <div>
+                                        <img src="https://raw.communitydragon.org/10.9/plugins/rcp-fe-lol-match-history/global/default/herald-100.png"
+                                             alt="Herald" class="img-fluid" width="20rem">
+                                    </div>
+                                    <div>{{ match.blue_team.objectives.riftHerald.kills }}</div>
+                                </div>
+                            </div>
+                            <div id="b-dragons" class="d-flex align-items-center gap-2">
+                                <div class="d-flex gap-1">
+                                    <div>
+                                        <img src="https://raw.communitydragon.org/10.9/plugins/rcp-fe-lol-match-history/global/default/dragon-100.png"
+                                             alt="Dragon" class="img-fluid" width="20rem">
+                                    </div>
+                                    <div>{{ match.blue_team.objectives.dragon.kills }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="b-total-gold" class="d-flex align-items-center gap-2">
+                            <div class="d-flex gap-1">
+                                <div>
+                                    <img src="https://raw.communitydragon.org/10.9/plugins/rcp-fe-lol-match-history/global/default/icon_gold.png"
+                                         alt="Gold" class="img-fluid" width="20rem">
+                                </div>
+                                <div>{{ match.blue_team.total_gold }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% for participant in match.blue_team.participants %}
+                <div class="row mt-4">
+                    <div id="b-summoner" class="d-flex align-items-center justify-content-between">
+                        <div id="b-champion" class="d-flex align-items-center gap-2 w-25">
+                            {% for champion in champions %}
+                            {% if champion.riot_id == participant.championId %}
+                            <div>
+                                <img src="{{ champion.icon_url }}" width="40rem" alt="{{ champion.champion_name }}"
+                                     class="img-fluid">
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                            <div class="d-flex gap-2">
+                                <div>{{ participant.riotIdGameName }}</div>
+                                <div>#{{ participant.riotIdTagline }}</div>
+                            </div>
+                        </div>
+                        <div id="b-summoner-spells" class="d-flex align-self-center gap-1">
+                            <div class="bg-primary">
+                                {% for key, value in summoner_spells.items %}
+                                {% if participant.summoner1Id|slugify == value.key %}
+                                <img src="https://ddragon.leagueoflegends.com/cdn/14.13.1/img/spell/{{value.id}}.png"
+                                     alt="" width="30rem" class="item img-fluid">
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                            <div class="bg-primary">{% for key, value in summoner_spells.items %}
+                                {% if participant.summoner2Id|slugify == value.key %}
+                                <img src="https://ddragon.leagueoflegends.com/cdn/14.13.1/img/spell/{{value.id}}.png"
+                                     alt="" width="30rem" class="item img-fluid">
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div id="b-summoner-runes" class="d-flex align-self-center gap-1">
+                            {% for style in participant.perks.styles %}
+                            {% for rune in runes %}
+                            {% if style.style == rune.id %}
+                            <div>
+                                <img src="https://ddragon.leagueoflegends.com/cdn/img/{{rune.icon}}"
+                                     alt="" width="25rem" class="item img-fluid">
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                            {% endfor %}
+                        </div>
+                        <div id="b-items" class="d-flex align-self-center gap-1">
+                            <div class="bg-primary">
+                                <img src="https://ddragon.leagueoflegends.com/cdn/14.13.1/img/item/{{participant.item0}}.png"
+                                     alt="" width="30rem" class="item img-fluid">
+                            </div>
+                            <div class="bg-primary">
+                                <img src="https://ddragon.leagueoflegends.com/cdn/14.13.1/img/item/{{participant.item1}}.png"
+                                     alt="" width="30rem" class="item img-fluid">
+                            </div>
+                            <img src="https://ddragon.leagueoflegends.com/cdn/14.13.1/img/item/{{participant.item2}}.png"
+                                 alt="" width="30rem" class="item img-fluid">
+                            <div class="bg-primary">
+                                <img src="https://ddragon.leagueoflegends.com/cdn/14.13.1/img/item/{{participant.item3}}.png"
+                                     alt="" width="30rem" class="item img-fluid">
+                            </div>
+                            <div class="bg-primary">
+                                <img src="https://ddragon.leagueoflegends.com/cdn/14.13.1/img/item/{{participant.item4}}.png"
+                                     alt="" width="30rem" class="item img-fluid">
+                            </div>
+                            <div class="bg-primary">
+                                <img src="https://ddragon.leagueoflegends.com/cdn/14.13.1/img/item/{{participant.item5}}.png"
+                                     alt="" width="30rem" class="item img-fluid">
+                            </div>
+                            <div class="bg-primary">
+                                <img src="https://ddragon.leagueoflegends.com/cdn/14.13.1/img/item/{{participant.item6}}.png"
+                                     alt="" width="30rem" class="item img-fluid">
+                            </div>
+                        </div>
+                        <div id="b-scores" class="d-flex flex-column align-items-center justify-content-center">
+                            <div>
+                                <span>{{ participant.kills }}</span> /
+                                <span>{{ participant.deaths }}</span> /
+                                <span>{{ participant.assists }}</span>
+                            </div>
+                            <div>{{ participant.challenges.kda | floatformat:2 }} KDA</div>
+                        </div>
+                        <div id="b-stats-1" class="d-flex flex-column align-items-center justify-content-center">
+                            <div>{{ participant.totalMinionsKilled }} CS</div>
+                            <div>{% widthratio participant.challenges.killParticipation 1 100 %}% KP</div>
+                        </div>
+                        <div id="b-stats-2" class="d-flex flex-column align-items-center justify-content-center">
+                            <div>{{ participant.totalDamageDealt }} DMG</div>
+                            <div>{% widthratio participant.challenges.teamDamagePercentage 1 100 %}% Team DMG</div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="row d-flex align-items-center  pt-4">
+                    <div id="r-neutral-objectives" class="d-flex align-items-center justify-content-between gap-2">
+                        <div id="r-team">
+                            <div>Red Team</div>
+                        </div>
+                        <div id="r-win">
+                            {% if match.red_team.win %}
+                            <div class="text-success">Victory</div>
+                            {% else %}
+                            <div class="text-danger">Defeat</div>
+                            {% endif %}
+                        </div>
+                        <div id="r-team-numbers" class="d-flex gap-1">
+                            <div>{{ match.red_team.total_kills }}</div>
+                            /
+                            <div>{{ match.red_team.total_assists }}</div>
+                            /
+                            <div>{{ match.red_team.total_deaths }}</div>
+                        </div>
+                        <div id="r-structures" class="d-flex align-items-center gap-3">
+                            <div id="r-towers" class="d-flex align-items-center">
+                                <div class="d-flex align-items-center gap-1">
+                                    <div>
+                                        <img src="https://raw.communitydragon.org/10.9/plugins/rcp-fe-lol-match-history/global/default/tower-100.png"
+                                             alt="Tower" class="img-fluid" width="20rem">
+                                    </div>
+                                    <div>{{ match.red_team.objectives.tower.kills }}</div>
+                                </div>
+                            </div>
+                            <div id="r-inhibitors" class="d-flex align-items-center">
+                                <div class="d-flex gap-1">
+                                    <div>
+                                        <img src="https://raw.communitydragon.org/10.9/plugins/rcp-fe-lol-match-history/global/default/inhibitor-100.png"
+                                             alt="Inhibitor" class="img-fluid" width="20rem">
+                                    </div>
+                                    <div>{{ match.red_team.objectives.inhibitor.kills }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="r-neutral-monsters" class="d-flex gap-3">
+                            <div id="r-barons" class="d-flex align-items-center">
+                                <div class="d-flex gap-1">
+                                    <div>
+                                        <img src="https://raw.communitydragon.org/10.9/plugins/rcp-fe-lol-match-history/global/default/baron-100.png"
+                                             alt="Baron" class="img-fluid" width="20rem">
+                                    </div>
+                                    <div>{{ match.red_team.objectives.baron.kills }}</div>
+                                </div>
+                            </div>
+                            <div id="r-horde" class="d-flex align-items-center">
+                                <div class="d-flex gap-1">
+                                    <div>
+                                        <img src="https://raw.communitydragon.org/10.9/plugins/rcp-fe-lol-match-history/global/default/vilemaw-100.png"
+                                             alt="Horde" class="img-fluid" width="20rem">
+                                    </div>
+                                    <div>{{ match.red_team.objectives.horde.kills }}</div>
+                                </div>
+                            </div>
+                            <div id="r-shellys" class="d-flex align-items-center">
+                                <div class="d-flex gap-1">
+                                    <div>
+                                        <img src="https://raw.communitydragon.org/10.9/plugins/rcp-fe-lol-match-history/global/default/herald-100.png"
+                                             alt="Herald" class="img-fluid" width="20rem">
+                                    </div>
+                                    <div>{{ match.red_team.objectives.riftHerald.kills }}</div>
+                                </div>
+                            </div>
+                            <div id="r-dragons" class="d-flex align-items-center gap-2">
+                                <div class="d-flex gap-1">
+                                    <div>
+                                        <img src="https://raw.communitydragon.org/10.9/plugins/rcp-fe-lol-match-history/global/default/dragon-100.png"
+                                             alt="Dragon" class="img-fluid" width="20rem">
+                                    </div>
+                                    <div>{{ match.red_team.objectives.dragon.kills }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="r-total-gold" class="d-flex align-items-center gap-2">
+                            <div class="d-flex gap-1">
+                                <div>
+                                    <img src="https://raw.communitydragon.org/10.9/plugins/rcp-fe-lol-match-history/global/default/icon_gold.png"
+                                         alt="Gold" class="img-fluid" width="20rem">
+                                </div>
+                                <div>{{ match.red_team.total_gold }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% for participant in match.red_team.participants %}
+                <div class="row mt-4">
+                    <div id="r-summoner" class="d-flex align-items-center justify-content-between">
+                        <div id="r-champion" class="d-flex align-items-center gap-2 w-25">
+                            {% for champion in champions %}
+                            {% if champion.riot_id == participant.championId %}
+                            <div>
+                                <img src="{{ champion.icon_url }}" width="40rem" alt="{{ champion.champion_name }}"
+                                     class="img-fluid">
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                            <div class="d-flex gap-2">
+                                <div>{{ participant.riotIdGameName }}</div>
+                                <div>#{{ participant.riotIdTagline }}</div>
+                            </div>
+                        </div>
+                        <div id="r-summoner-spells" class="d-flex align-self-center gap-1">
+                            <div class="bg-primary">
+                                {% for key, value in summoner_spells.items %}
+                                {% if participant.summoner1Id|slugify == value.key %}
+                                <img src="https://ddragon.leagueoflegends.com/cdn/14.13.1/img/spell/{{value.id}}.png"
+                                     alt="" width="30rem" class="item img-fluid">
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                            <div class="bg-primary">{% for key, value in summoner_spells.items %}
+                                {% if participant.summoner2Id|slugify == value.key %}
+                                <img src="https://ddragon.leagueoflegends.com/cdn/14.13.1/img/spell/{{value.id}}.png"
+                                     alt="" width="30rem" class="item img-fluid">
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div id="r-summoner-runes" class="d-flex align-self-center gap-1">
+                            {% for style in participant.perks.styles %}
+                            {% for rune in runes %}
+                            {% if style.style == rune.id %}
+                            <div>
+                                <img src="https://ddragon.leagueoflegends.com/cdn/img/{{rune.icon}}"
+                                     alt="" width="25rem" class="item img-fluid">
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                            {% endfor %}
+                        </div>
+                        <div id="r-items" class="d-flex align-self-center gap-1">
+                            <div class="bg-primary">
+                                <img src="https://ddragon.leagueoflegends.com/cdn/14.13.1/img/item/{{participant.item0}}.png"
+                                     alt="" width="30rem" class="item img-fluid">
+                            </div>
+                            <div class="bg-primary">
+                                <img src="https://ddragon.leagueoflegends.com/cdn/14.13.1/img/item/{{participant.item1}}.png"
+                                     alt="" width="30rem" class="item img-fluid">
+                            </div>
+                            <img src="https://ddragon.leagueoflegends.com/cdn/14.13.1/img/item/{{participant.item2}}.png"
+                                 alt="" width="30rem" class="item img-fluid">
+                            <div class="bg-primary">
+                                <img src="https://ddragon.leagueoflegends.com/cdn/14.13.1/img/item/{{participant.item3}}.png"
+                                     alt="" width="30rem" class="item img-fluid">
+                            </div>
+                            <div class="bg-primary">
+                                <img src="https://ddragon.leagueoflegends.com/cdn/14.13.1/img/item/{{participant.item4}}.png"
+                                     alt="" width="30rem" class="item img-fluid">
+                            </div>
+                            <div class="bg-primary">
+                                <img src="https://ddragon.leagueoflegends.com/cdn/14.13.1/img/item/{{participant.item5}}.png"
+                                     alt="" width="30rem" class="item img-fluid">
+                            </div>
+                            <div class="bg-primary">
+                                <img src="https://ddragon.leagueoflegends.com/cdn/14.13.1/img/item/{{participant.item6}}.png"
+                                     alt="" width="30rem" class="item img-fluid">
+                            </div>
+                        </div>
+                        <div id="r-scores" class="d-flex flex-column align-items-center justify-content-center">
+                            <div>
+                                <span>{{ participant.kills }}</span> /
+                                <span>{{ participant.deaths }}</span> /
+                                <span>{{ participant.assists }}</span>
+                            </div>
+                            <div>{{ participant.challenges.kda | floatformat:2 }} KDA</div>
+                        </div>
+                        <div id="r-stats-1" class="d-flex flex-column align-items-center justify-content-center">
+                            <div>{{ participant.totalMinionsKilled }} CS</div>
+                            <div>{% widthratio participant.challenges.killParticipation 1 100 %}% KP</div>
+                        </div>
+                        <div id="r-stats-2" class="d-flex flex-column align-items-center justify-content-center">
+                            <div>{{ participant.totalDamageDealt }} DMG</div>
+                            <div>{% widthratio participant.challenges.teamDamagePercentage 1 100 %}% Team DMG</div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="card bg-dark text-white w-100">
+            <div class="card-body w-100">
+                <div>No details available for this match.</div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

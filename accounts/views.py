@@ -5,7 +5,6 @@ from .forms import CreateUserForm, LoginUserForm, UpdateSettingsForm
 from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-
 from .models import Accounts
 
 logger = logging.getLogger(__name__)
@@ -23,7 +22,7 @@ def register(request):
                                     )
             login(request, new_user)
 
-            return redirect("home")
+            return redirect("/")
         else:
             messages.info(request, "Username or email is already registered")
 
@@ -43,7 +42,7 @@ def login_user(request):
 
             if user is not None:
                 auth.login(request, user)
-                return redirect("home")
+                return redirect("/")
         else:
             messages.info(request, "Username or password is incorrect")
 
@@ -53,7 +52,7 @@ def login_user(request):
 
 def logout_user(request):
     auth.logout(request)
-    return redirect("home")
+    return redirect("/")
 
 
 @login_required(login_url="login")

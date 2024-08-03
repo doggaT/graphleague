@@ -6,12 +6,12 @@ from api.models import RiotAPI, RegionToPlatform
 class Match:
     riot_api = RiotAPI()
 
-    def get_my_matches_by_puuid(self, user_id, queue=None):
+    def get_my_matches_by_puuid(self, user_id, queue=None, count=10):
         user_account = Accounts.objects.get(user_id_id=user_id)
         my_matches = []
         if user_account is not None:
             matches = self.riot_api.fetch_summoner_matches_data(
-                user_account.region, user_account.puuid, match_type=queue, queue_id=420, count=10)
+                user_account.region, user_account.puuid, match_type=queue, queue_id=420, count=count)
             for match_id in matches:
                 response = self.riot_api.fetch_match_data(user_account.region, match_id)
                 my_matches.append(response)
@@ -34,6 +34,11 @@ class Match:
                 summoner_matches.append(response)
         return summoner_matches
 
-    # def get_matches_details(self, region, match_id):
-    #     response = self.riot_api.fetch_match_data(user_account.region, match_id)
-    #     return summoner_matches
+    def get_summoner_matches(self, region, puuid, queue=None):
+        summoner_matches = []
+
+        matches = self.riot_api.fetch_summoner_matches_data(region, puuid, match_type=queue, queue_id=420)
+        for match_id in matches:
+            response = self.riot_api.fetch_match_data(region, match_id)
+            summoner_matches.append(response)
+        return summoner_matches
